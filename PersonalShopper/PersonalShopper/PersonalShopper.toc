@@ -1,0 +1,6 @@
+## Interface: 80200
+## Title: Personal Shopper
+## Notes: Buying made easy.
+## Version: 0.1
+
+PersonalShopper.lua
