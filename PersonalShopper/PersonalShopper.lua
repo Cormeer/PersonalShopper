@@ -25,7 +25,20 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
     if msg == nil or msg == '' then
         ShowHelp();
     else
-        local command, itemLink, quanity = msg:match("%S+")
+        local command = msg:match("%S+")
+        if(command == 'add' or command == 'remove') then
+          itemLink = msg:match("|c.-|r")
+          if(command == "add") then
+            quantity = msg:match("%d+$")
+          end
+        end
+        --[[
+        --local command, itemLink, quantity = msg:match("(%S+)%s*(|c.-|r)%s*(%d+)")
+        print(command)
+        print(itemLink)
+        print(quantity)
+        --print(msg:match("(%S+)%s*(|c.-|r)%s*(%d+)"))
+        
         if(command == 'help') then
             ShowHelp();
         end
@@ -35,6 +48,7 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
         if(command == 'remove') then
             removeFromList(itemLink);
         end
+        ]]
         if(command == 'list') then
             printItemList();
         end
