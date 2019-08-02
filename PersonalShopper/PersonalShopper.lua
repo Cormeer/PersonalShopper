@@ -3,6 +3,7 @@ SLASH_RELOADUI1 = "/rlui";
 SlashCmdList.RELOADUI = ReloadUI;
 local PSFrame = CreateFrame("FRAME", "psFrame");
 local itemList = {};
+PSFrame:RegisterEvent("MERCHANT_SHOW")
 
 local function ShowHelp()
     print('Welcome to Personal Shopper by Cormeer.')
@@ -38,11 +39,11 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
         end
         if(command == 'add') then
             addToList(itemLink, quantity);
-            print('Added: ', itemLink, ' ', quantity, ' to your shopping list.'
+            print('Added: ', itemLink, ' ', quantity, ' to your shopping list.')
         end
         if(command == 'remove') then
             removeFromList(itemLink);
-            print('Removed ', itemLink, ' from your shopping list.'
+            print('Removed ', itemLink, ' from your shopping list.')
         end
         if(command == 'list') then
             printItemList();
@@ -50,8 +51,30 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
     end
 end
 
+local function merchantShowHandler()
+  local numMerchantItems = GetMerchantNumItems();
+  for i=1,numMerchantItems do
+    for itemLink, quantity in pairs(itemList) do
+      local name, link, quality, iLevel, reqLevel, 
+      class, subclass, maxStack, equipSlot, texture, 
+      vendorPrice = GetItemInfo(itemLink)
+      
+      local mercName, mercTexture, mercQuantity, 
+      mercNumAvailable, mercIsUsable, 
+      mercExtendedCost = GetMerchantItemInfo(i)
+      
+      local numOwned = GetItemCount(itemLink)
+      local numToBuy = quantity-numOwned;
+      if(numToBuy < 0) then numToBuy = 0; end
+      print(quantity, numOwned, numToBuy)
+      if(name == mercName and numToBuy > 0) then
+        BuyMerchantItem(i, numToBuy)
+      end
+    end
+  end
+end
 
-
+PSFrame:SetScript("OnEvent", merchantShowHandler);
 
         --[[local command, itemLink, quantity = msg:match("(%S+)%s*(|c.-|r)%s*(%d+)")
         print(command)
