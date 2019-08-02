@@ -32,25 +32,30 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
             quantity = msg:match("%d+$")
           end
         end
-        --[[
-        --local command, itemLink, quantity = msg:match("(%S+)%s*(|c.-|r)%s*(%d+)")
-        print(command)
-        print(itemLink)
-        print(quantity)
-        --print(msg:match("(%S+)%s*(|c.-|r)%s*(%d+)"))
-        
+
         if(command == 'help') then
             ShowHelp();
         end
         if(command == 'add') then
             addToList(itemLink, quantity);
+            print('Added: ', itemLink, ' ', quantity, ' to your shopping list.'
         end
         if(command == 'remove') then
             removeFromList(itemLink);
+            print('Removed ', itemLink, ' from your shopping list.'
         end
-        ]]
         if(command == 'list') then
             printItemList();
         end
     end
 end
+
+
+
+
+        --[[local command, itemLink, quantity = msg:match("(%S+)%s*(|c.-|r)%s*(%d+)")
+        print(command)
+        print(itemLink)
+        print(quantity)
+        --print(msg:match("(%S+)%s*(|c.-|r)%s*(%d+)"))
+        ]]
