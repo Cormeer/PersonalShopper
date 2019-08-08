@@ -2,11 +2,16 @@ local addonName, addon = ...
 SLASH_RELOADUI1 = "/rlui";
 SlashCmdList.RELOADUI = ReloadUI;
 local PSFrame = CreateFrame("FRAME", "psFrame");
-local itemList = {};
+itemList = {};
 PSFrame:RegisterEvent("MERCHANT_SHOW")
 
 local function ShowHelp()
     print('Welcome to Personal Shopper by Cormeer.')
+    print('Slash commands:')
+    print('/shopper help - displays this help page.')
+    print('/shopper list - displays your current shopping list.')
+    print('/shopper add [Item Link] [quantity] - adds the item and quantity to your shopping list.')
+    print('/shopper remove [Item Link] - removes the item from your shopping list.')
 end
 
 local function addToList(itemLink, quantity)
@@ -18,6 +23,7 @@ local function removeFromList(itemLink)
 end
 
 local function printItemList()
+    print("Your current shopping list:")
     for key,value in pairs(itemList) do print(key,value) end
 end
 
@@ -66,7 +72,6 @@ local function merchantShowHandler()
       local numOwned = GetItemCount(itemLink)
       local numToBuy = quantity-numOwned;
       if(numToBuy < 0) then numToBuy = 0; end
-      print(quantity, numOwned, numToBuy)
       if(name == mercName and numToBuy > 0) then
         BuyMerchantItem(i, numToBuy)
       end

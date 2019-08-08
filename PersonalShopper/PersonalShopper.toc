@@ -2,5 +2,6 @@
 ## Title: Personal Shopper
 ## Notes: Buying made easy.
 ## Version: 0.1
+## SavedVariablesPerCharacter: itemList
 
 PersonalShopper.lua
