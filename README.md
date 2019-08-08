@@ -1,6 +1,6 @@
 This is an add-on can be used to automatically purchase items at the vendor.
 Personal Shopper works by creating a vitual shopping list that is consulted when you visit a vendor.
-You may add and item and a quantity to youy shopping list, and each time you visit a vendor that sells that item,
+You may add and item and a quantity to your shopping list, and each time you visit a vendor that sells that item,
 Personal Shopper will purchase a number of that item up to that quantity.
 
 # Getting started
