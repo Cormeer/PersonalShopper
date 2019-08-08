@@ -75,10 +75,3 @@ local function merchantShowHandler()
 end
 
 PSFrame:SetScript("OnEvent", merchantShowHandler);
-
-        --[[local command, itemLink, quantity = msg:match("(%S+)%s*(|c.-|r)%s*(%d+)")
-        print(command)
-        print(itemLink)
-        print(quantity)
-        --print(msg:match("(%S+)%s*(|c.-|r)%s*(%d+)"))
-        ]]
