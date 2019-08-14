@@ -73,7 +73,11 @@ local function merchantShowHandler()
       local numToBuy = quantity-numOwned;
       if(numToBuy < 0) then numToBuy = 0; end
       if(name == mercName and numToBuy > 0) then
-        BuyMerchantItem(i, numToBuy)
+        if(mercNumAvailable ~= -1) then
+            print('Personal Shopper will not purchase limited-quantity items.')
+        else
+            BuyMerchantItem(i, numToBuy)
+        end
       end
     end
   end
