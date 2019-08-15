@@ -65,7 +65,7 @@ local function merchantShowHandler()
       class, subclass, maxStack, equipSlot, texture, 
       vendorPrice = GetItemInfo(itemLink)
       
-      local mercName, mercTexture, mercQuantity, 
+      local mercName, mercTexture, mercPrice, mercQuantity, 
       mercNumAvailable, mercIsUsable, 
       mercExtendedCost = GetMerchantItemInfo(i)
       
