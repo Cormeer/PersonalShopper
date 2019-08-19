@@ -1,7 +1,7 @@
-## Interface: 80200
+## Interface: 11302
 ## Title: Personal Shopper
 ## Notes: Buying made easy.
-## Version: 0.1
+## Version: 1.0
 ## SavedVariablesPerCharacter: itemList
 
 PersonalShopper.lua
