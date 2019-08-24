@@ -56,13 +56,13 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
                 removeFromList(itemLink);
                 print('Removed ', itemLink, ' from your shopping list.')
             else
-                print("Please enter a valid item link")
+                print("Please enter a valid item link.")
             end
         
         elseif(command == 'list') then
             printItemList();
         else
-            print("Please enter a valid command")
+            print("Please enter a valid command.")
         end
     end
 end
