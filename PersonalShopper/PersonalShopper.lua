@@ -82,7 +82,7 @@ local function merchantShowHandler()
       local numOwned = GetItemCount(itemLink)
       local numToBuy = quantity-numOwned;
       if(numToBuy < 0) then numToBuy = 0; end
-      if(name == mercName and numToBuy > 0) then
+      if(name == mercName and numToBuy > 0 and name ~= nil and mercName ~= nil) then
         if(mercNumAvailable ~= -1) then
             print('Personal Shopper will not purchase limited-quantity items.')
         else
