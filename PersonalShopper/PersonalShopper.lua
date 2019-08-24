@@ -42,17 +42,27 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
 
         if(command == 'help') then
             ShowHelp();
-        end
-        if(command == 'add') then
-            addToList(itemLink, quantity);
-            print('Added: ', itemLink, ' ', quantity, ' to your shopping list.')
-        end
-        if(command == 'remove') then
-            removeFromList(itemLink);
-            print('Removed ', itemLink, ' from your shopping list.')
-        end
-        if(command == 'list') then
+        
+        elseif(command == 'add') then
+            if itemLink ~= nil and quantity ~= nil then
+                addToList(itemLink, quantity);
+                print('Added: ', itemLink, ' ', quantity, ' to your shopping list.')
+            else
+                print("Please enter a valid item link and quantity.")
+            end
+        
+        elseif(command == 'remove') then
+            if itemLink ~= nil then
+                removeFromList(itemLink);
+                print('Removed ', itemLink, ' from your shopping list.')
+            else
+                print("Please enter a valid item link")
+            end
+        
+        elseif(command == 'list') then
             printItemList();
+        else
+            print("Please enter a valid command")
         end
     end
 end
