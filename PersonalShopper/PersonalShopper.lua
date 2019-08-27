@@ -46,7 +46,7 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
         elseif(command == 'add') then
             if itemLink ~= nil and quantity ~= nil then
                 addToList(itemLink, quantity);
-                print('Added: ', itemLink, ' ', quantity, ' to your shopping list.')
+                print('Added:', itemLink, 'x',quantity, 'to your shopping list.')
             else
                 print("Please enter a valid item link and quantity.")
             end
@@ -54,10 +54,13 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
         elseif(command == 'remove') then
             if itemLink ~= nil then
                 removeFromList(itemLink);
-                print('Removed ', itemLink, ' from your shopping list.')
+                print('Removed', itemLink, 'from your shopping list.')
             else
                 print("Please enter a valid item link.")
             end
+        
+        elseif(command == 'clear') then
+          itemList = {}
         
         elseif(command == 'list') then
             printItemList();
@@ -65,6 +68,15 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
             print("Please enter a valid command.")
         end
     end
+end
+
+local function buyMultipleStacks(stacks, remainder, maxStack, merchantIndex)
+  if(stacks > 0) then
+    BuyMerchantItem(merchantIndex, maxStack);
+    buyMultipleStacks( (stacks-1), remainder, maxStack, merchantIndex );
+  else
+    BuyMerchantItem(merchantIndex, remainder);
+  end
 end
 
 local function merchantShowHandler()
@@ -86,7 +98,14 @@ local function merchantShowHandler()
         if(mercNumAvailable ~= -1) then
             print('Personal Shopper will not purchase limited-quantity items.')
         else
-            BuyMerchantItem(i, numToBuy)
+            if( numToBuy > maxStack ) then
+              local remainder = numToBuy % maxStack;
+              local tempNum = numToBuy - remainder;
+              local stacks = tempNum / maxStack;
+              buyMultipleStacks(stacks, remainder, maxStack, i);
+            else
+              BuyMerchantItem(i, numToBuy)
+            end
         end
       end
     end
