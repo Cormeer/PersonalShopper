@@ -2,8 +2,10 @@ local addonName, addon = ...
 SLASH_RELOADUI1 = "/rlui";
 SlashCmdList.RELOADUI = ReloadUI;
 local PSFrame = CreateFrame("FRAME", "psFrame");
-itemList = {};
+itemList = {}
 PSFrame:RegisterEvent("MERCHANT_SHOW")
+PSFrame:RegisterEvent("ADDON_LOADED")
+versionNum = 1;
 
 local function ShowHelp()
     print('Welcome to Personal Shopper by Cormeer.')
@@ -12,19 +14,24 @@ local function ShowHelp()
     print('/shopper list - displays your current shopping list.')
     print('/shopper add [Item Link] [quantity] - adds the item and quantity to your shopping list.')
     print('/shopper remove [Item Link] - removes the item from your shopping list.')
+print('/shopper clear - removes all items from your shopping list.')
 end
 
-local function addToList(itemLink, quantity)
-    itemList[itemLink] = quantity;
+local function addToList(itemID, quantity)
+    itemList[itemID] = quantity;
 end
 
-local function removeFromList(itemLink)
-    itemList[itemLink] = nil;
+local function removeFromList(itemID)
+    itemList[itemID] = nil;
 end
 
 local function printItemList()
     print("Your current shopping list:")
-    for key,value in pairs(itemList) do print(key,value) end
+    for key,value in pairs(itemList) do
+      local _,itemLink,_,_,_,
+      _,_,_,_,_,_ = GetItemInfo(key)
+      print(itemLink,value)
+    end
 end
 
 SLASH_PERSONALSHOPPER1 = '/shopper'
@@ -35,6 +42,7 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
         local command = msg:match("%S+")
         if(command == 'add' or command == 'remove') then
           itemLink = msg:match("|c.-|r")
+          itemID,_,_,_,_,_,_ = GetItemInfoInstant(itemLink)
           if(command == "add") then
             quantity = msg:match("%d+$")
           end
@@ -42,26 +50,27 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
 
         if(command == 'help') then
             ShowHelp();
-        
+       
         elseif(command == 'add') then
-            if itemLink ~= nil and quantity ~= nil then
-                addToList(itemLink, quantity);
+            if itemID ~= nil and itemLink ~= nil and quantity ~= nil then
+                addToList(itemID, quantity);
                 print('Added:', itemLink, 'x',quantity, 'to your shopping list.')
             else
                 print("Please enter a valid item link and quantity.")
             end
-        
+       
         elseif(command == 'remove') then
-            if itemLink ~= nil then
-                removeFromList(itemLink);
+            if itemID ~= nil and itemLink ~= nil then
+                removeFromList(itemID);
                 print('Removed', itemLink, 'from your shopping list.')
             else
                 print("Please enter a valid item link.")
             end
-        
+       
         elseif(command == 'clear') then
+          print("Clearing all items from your shopping list.")
           itemList = {}
-        
+       
         elseif(command == 'list') then
             printItemList();
         else
@@ -70,28 +79,19 @@ function SlashCmdList.PERSONALSHOPPER(msg, editbox)
     end
 end
 
-local function buyMultipleStacks(stacks, remainder, maxStack, merchantIndex)
-  if(stacks > 0) then
-    BuyMerchantItem(merchantIndex, maxStack);
-    buyMultipleStacks( (stacks-1), remainder, maxStack, merchantIndex );
-  else
-    BuyMerchantItem(merchantIndex, remainder);
-  end
-end
-
 local function merchantShowHandler()
   local numMerchantItems = GetMerchantNumItems();
   for i=1,numMerchantItems do
-    for itemLink, quantity in pairs(itemList) do
-      local name, link, quality, iLevel, reqLevel, 
-      class, subclass, maxStack, equipSlot, texture, 
-      vendorPrice = GetItemInfo(itemLink)
-      
-      local mercName, mercTexture, mercPrice, mercQuantity, 
-      mercNumAvailable, mercIsUsable, 
+    for itemID, quantity in pairs(itemList) do
+      local name, link, quality, iLevel, reqLevel,
+      class, subclass, maxStack, equipSlot, texture,
+      vendorPrice = GetItemInfo(itemID)
+     
+      local mercName, mercTexture, mercPrice, mercQuantity,
+      mercNumAvailable, mercIsUsable,
       mercExtendedCost = GetMerchantItemInfo(i)
-      
-      local numOwned = GetItemCount(itemLink)
+     
+      local numOwned = GetItemCount(itemID)
       local numToBuy = quantity-numOwned;
       if(numToBuy < 0) then numToBuy = 0; end
       if(name == mercName and numToBuy > 0 and name ~= nil and mercName ~= nil) then
@@ -102,7 +102,10 @@ local function merchantShowHandler()
               local remainder = numToBuy % maxStack;
               local tempNum = numToBuy - remainder;
               local stacks = tempNum / maxStack;
-              buyMultipleStacks(stacks, remainder, maxStack, i);
+              for j=1, stacks do
+                BuyMerchantItem(i, maxStack)
+              end
+              if(remainder > 0) then BuyMerchantItem(i, remainder) end
             else
               BuyMerchantItem(i, numToBuy)
             end
@@ -112,4 +115,27 @@ local function merchantShowHandler()
   end
 end
 
-PSFrame:SetScript("OnEvent", merchantShowHandler);
+
+local function updateToVersion2()
+  local tempItemList = {}
+  for itemLink,quantity in pairs(itemList) do
+    local itemID,_,_,_,_,_,_ = GetItemInfoInstant(itemLink);
+    tempItemList[itemID] = quantity;
+  end
+  itemList=tempItemList;
+  versionNum=2;
+end
+
+local function checkVersion()
+  if(versionNum == 1) then updateToVersion2() end
+end
+
+local function eventHandler(self, event, arg1, ...)
+  if (event == "MERCHANT_SHOW") then 
+    merchantShowHandler() 
+  elseif (event == "ADDON_LOADED" and arg1==addonName) then 
+    checkVersion() 
+  end
+end
+
+PSFrame:SetScript("OnEvent", eventHandler);

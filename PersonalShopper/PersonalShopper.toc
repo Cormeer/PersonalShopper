@@ -1,7 +1,7 @@
 ## Interface: 11302
 ## Title: Personal Shopper
 ## Notes: Buying made easy.
-## Version: 1.0
-## SavedVariablesPerCharacter: itemList
+## Version: 1.2
+## SavedVariablesPerCharacter: itemList,versionNum
 
 PersonalShopper.lua
